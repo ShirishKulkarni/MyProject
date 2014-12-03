@@ -1,0 +1,143 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<style>
+#mesageBody,#sendMessage {
+	border: solid black 1px;
+	width: 400px;
+}
+</style>
+
+
+
+<title>Insert title here</title>
+</head>
+<body>
+
+	<div id="mesageBody" style="overflow: scroll; height: 400px;"></div>
+	<table border="0">
+		<tr>
+			<th><input type="text" id="sendMessage" style="height: 100px;" />
+			</th>
+
+			<th>
+				<button id="postMessage">Post</button>
+			</th>
+			<th><input type="text" id="fromUser" /></th>
+			<th><input type="text" id="toUser" /></th>
+			<th>
+				<button id="refreshButton">Refresh</button>
+			</th>
+		
+		<tr>
+	</table>
+
+
+</body>
+
+<script type="text/javascript" src="jquery-1.10.2.js"></script>
+</body>
+
+<script type="text/javascript">
+	$('document')
+			.ready(
+
+					function() {
+						setTimeout("fetchMessages()",5000);
+
+						$('#refreshButton')
+								.click(
+										function() {
+
+											//fetchMessages();
+
+										
+										});
+						//alert('After request')	
+
+						$('#postMessage')
+								.click(
+										function() {
+											var fromUser = $('#fromUser').val();
+											var toUser = $('#toUser').val();
+											var messages = $('#sendMessage')
+													.val();
+
+											var messageToBePosted = $(
+													'#sendMessage').val();
+											$
+													.ajax({
+														url : "http://117.192.247.231:8080/sampleTest/rest/chat/putMessages",
+														contentType : "application/json",
+														data : "fromUser="
+																+ fromUser
+																+ "&toUser="
+																+ toUser
+																+ "&message="
+																+ messages,
+														async : false,
+														cache : false,
+														success : function(
+																response) {
+
+															fetchMessages();
+														
+
+														},
+														error : function(error) {
+															
+
+															//alert(error.statusText)
+
+														}
+
+													});
+
+										});
+						
+						function fetchMessages()
+						{
+							alert('samle');
+							
+							$
+									.ajax({
+										url : "http://117.192.247.231:8080/sampleTest/rest/chat/getMessages",
+										contentType : "application/json",
+										async : false,
+										cache : false,
+										success : function(
+												response) {
+											
+											html = '';
+											for (i = 0; i < response.length; i++) {
+												if (response[i].fromUser == 'santa')
+													html += "<p style='color:red'>SANTA:"
+															+ response[i].message
+															+ "</p>";
+												else
+													html += "<p style='color:green'>MANOJ:"
+															+ response[i].message
+															+ "</p>"
+											}
+
+											$('#mesageBody')
+													.html(html);
+											$("#mesageBody").animate({ scrollTop: $("#mesageBody")[0].scrollHeight }, 1000);
+											setTimeout("fetchMessages()",5000);
+											
+										},
+										error : function(error) {
+
+											//alert(error.statusText)
+
+										}
+
+									});
+						}
+						
+						
+					});
+</script>
+</html>
